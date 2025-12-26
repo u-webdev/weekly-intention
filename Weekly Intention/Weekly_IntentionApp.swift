@@ -1,17 +1,12 @@
-//
-//  Weekly_IntentionApp.swift
-//  Weekly Intention
-//
-//  Created by Uwe Bury on 25.12.25.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
-struct Weekly_IntentionApp: App {
+struct WeeklyIntentionApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: WeeklyIntention.self)
     }
 }
