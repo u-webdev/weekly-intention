@@ -6,38 +6,44 @@ struct WeekSlide: View {
     let intentionText: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(weekRangeText)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
 
-                Text("Week \(weekNumber)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer(minLength: 10)
-
-            if intentionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Text("Set intention")
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            } else {
-                Text(intentionText)
-                    .font(.largeTitle.weight(.semibold))
-                    .lineSpacing(6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
+        ZStack {
+            shape
                 .fill(.thinMaterial)
-        )
+
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(weekRangeText)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    Text("Week \(weekNumber)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 8)
+
+                if intentionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text("Set intention")
+                        .font(.title2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 8)
+                } else {
+                    Text(intentionText)
+                        .font(.largeTitle.weight(.semibold))
+                        .lineSpacing(6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 8)
+                }
+
+                Spacer()
+            }
+            .padding(32)
+        }
+        .clipShape(shape)
     }
 
     private var weekNumber: Int {

@@ -18,6 +18,10 @@ struct ContentView: View {
     @State private var editingWeekStart: Date?
     @State private var draftText: String = ""
 
+    #if os(macOS)
+    @FocusState private var macContentFocused: Bool
+    #endif
+
     var body: some View {
         let weeks = weekStartsAroundNow()
 
@@ -50,6 +54,7 @@ struct ContentView: View {
                     Image(systemName: "chevron.left")
                 }
                 .buttonStyle(.borderless)
+                .keyboardShortcut(.leftArrow, modifiers: [])
                 .disabled(selectedIndex <= 0)
 
                 Button {
@@ -58,13 +63,8 @@ struct ContentView: View {
                     Image(systemName: "chevron.right")
                 }
                 .buttonStyle(.borderless)
+                .keyboardShortcut(.rightArrow, modifiers: [])
                 .disabled(selectedIndex >= weeks.count - 1)
-
-                Spacer()
-
-                Text(macWeekTitle(for: currentWeekStart(from: weeks)))
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
 
                 Spacer()
             }
@@ -83,7 +83,27 @@ struct ContentView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 24)
         }
-        .onAppear { selectedIndex = weeksBefore }
+        .onMoveCommand { direction in
+            switch direction {
+            case .left:
+                selectedIndex = max(0, selectedIndex - 1)
+            case .right:
+                selectedIndex = min(weeks.count - 1, selectedIndex + 1)
+            default:
+                break
+            }
+        }
+        .focusable()
+        #if os(macOS)
+        .focused($macContentFocused)
+        .focusEffectDisabled()
+        #endif
+        .onAppear {
+            selectedIndex = weeksBefore
+            #if os(macOS)
+            macContentFocused = true
+            #endif
+        }
         #endif
         }
         .sheet(item: editingWeekStartDateItem) { (item: DateItem) in
