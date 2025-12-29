@@ -57,6 +57,15 @@ struct ContentView: View {
                 .keyboardShortcut(.leftArrow, modifiers: [])
                 .disabled(selectedIndex <= 0)
 
+                Button("Today") {
+                    selectedIndex = weeksBefore
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .keyboardShortcut("0", modifiers: [.command])
+                .help("Jump to current week (⌘0)")
+                .disabled(selectedIndex == weeksBefore)
+
                 Button {
                     selectedIndex = min(weeks.count - 1, selectedIndex + 1)
                 } label: {
