@@ -1,0 +1,19 @@
+# Xcode
+.DS_Store
+build/
+DerivedData/
+
+# Xcode workspace data
+*.xcworkspace
+*.xcworkspace/**
+
+# Xcode project user data
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/
+
+# SwiftPM
+.swiftpm/
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
