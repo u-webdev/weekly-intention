@@ -6,14 +6,65 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		23E23AA32F03DB5D00547DDE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E23AA22F03DB5D00547DDE /* WidgetKit.framework */; };
+		23E23AA52F03DB5D00547DDE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23E23AA42F03DB5D00547DDE /* SwiftUI.framework */; };
+		23E23AB02F03DB5E00547DDE /* WeeklyIntentionWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23E23AA02F03DB5D00547DDE /* WeeklyIntentionWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23E23AAE2F03DB5E00547DDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2364B9582EFD8C7900C3F912 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23E23A9F2F03DB5D00547DDE;
+			remoteInfo = WeeklyIntentionWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		23E23AB12F03DB5E00547DDE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				23E23AB02F03DB5E00547DDE /* WeeklyIntentionWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2364B9602EFD8C7900C3F912 /* Weekly Intention.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Weekly Intention.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23E23AA02F03DB5D00547DDE /* WeeklyIntentionWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeeklyIntentionWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		23E23AA22F03DB5D00547DDE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		23E23AA42F03DB5D00547DDE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		23E23AB42F03DB5E00547DDE /* Exceptions for "WeeklyIntentionWidget" folder in "WeeklyIntentionWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2364B9622EFD8C7900C3F912 /* Weekly Intention */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Weekly Intention";
+			sourceTree = "<group>";
+		};
+		23E23AA62F03DB5D00547DDE /* WeeklyIntentionWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				23E23AB42F03DB5E00547DDE /* Exceptions for "WeeklyIntentionWidget" folder in "WeeklyIntentionWidgetExtension" target */,
+			);
+			path = WeeklyIntentionWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,6 +77,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23E23A9D2F03DB5D00547DDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23E23AA52F03DB5D00547DDE /* SwiftUI.framework in Frameworks */,
+				23E23AA32F03DB5D00547DDE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -33,6 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				2364B9622EFD8C7900C3F912 /* Weekly Intention */,
+				23E23AA62F03DB5D00547DDE /* WeeklyIntentionWidget */,
+				23E23AA12F03DB5D00547DDE /* Frameworks */,
 				2364B9612EFD8C7900C3F912 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +103,18 @@
 			isa = PBXGroup;
 			children = (
 				2364B9602EFD8C7900C3F912 /* Weekly Intention.app */,
+				23E23AA02F03DB5D00547DDE /* WeeklyIntentionWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		23E23AA12F03DB5D00547DDE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				23E23AA22F03DB5D00547DDE /* WidgetKit.framework */,
+				23E23AA42F03DB5D00547DDE /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +127,12 @@
 				2364B95C2EFD8C7900C3F912 /* Sources */,
 				2364B95D2EFD8C7900C3F912 /* Frameworks */,
 				2364B95E2EFD8C7900C3F912 /* Resources */,
+				23E23AB12F03DB5E00547DDE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				23E23AAF2F03DB5E00547DDE /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				2364B9622EFD8C7900C3F912 /* Weekly Intention */,
@@ -69,6 +143,28 @@
 			productName = "Weekly Intention";
 			productReference = 2364B9602EFD8C7900C3F912 /* Weekly Intention.app */;
 			productType = "com.apple.product-type.application";
+		};
+		23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23E23AB52F03DB5E00547DDE /* Build configuration list for PBXNativeTarget "WeeklyIntentionWidgetExtension" */;
+			buildPhases = (
+				23E23A9C2F03DB5D00547DDE /* Sources */,
+				23E23A9D2F03DB5D00547DDE /* Frameworks */,
+				23E23A9E2F03DB5D00547DDE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				23E23AA62F03DB5D00547DDE /* WeeklyIntentionWidget */,
+			);
+			name = WeeklyIntentionWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = WeeklyIntentionWidgetExtension;
+			productReference = 23E23AA02F03DB5D00547DDE /* WeeklyIntentionWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +177,9 @@
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					2364B95F2EFD8C7900C3F912 = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					23E23A9F2F03DB5D00547DDE = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
@@ -100,12 +199,20 @@
 			projectRoot = "";
 			targets = (
 				2364B95F2EFD8C7900C3F912 /* Weekly Intention */,
+				23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2364B95E2EFD8C7900C3F912 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23E23A9E2F03DB5D00547DDE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +229,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23E23A9C2F03DB5D00547DDE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		23E23AAF2F03DB5E00547DDE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */;
+			targetProxy = 23E23AAE2F03DB5E00547DDE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2364B9692EFD8C7B00C3F912 /* Debug */ = {
@@ -329,6 +451,90 @@
 			};
 			name = Release;
 		};
+		23E23AB22F03DB5E00547DDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28C774C4SH;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeeklyIntentionWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WeeklyIntentionWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "uweb.Weekly-Intention.WeeklyIntentionWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		23E23AB32F03DB5E00547DDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28C774C4SH;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WeeklyIntentionWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WeeklyIntentionWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "uweb.Weekly-Intention.WeeklyIntentionWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -346,6 +552,15 @@
 			buildConfigurations = (
 				2364B96C2EFD8C7B00C3F912 /* Debug */,
 				2364B96D2EFD8C7B00C3F912 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23E23AB52F03DB5E00547DDE /* Build configuration list for PBXNativeTarget "WeeklyIntentionWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23E23AB22F03DB5E00547DDE /* Debug */,
+				23E23AB32F03DB5E00547DDE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
