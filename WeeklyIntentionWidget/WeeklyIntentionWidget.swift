@@ -8,54 +8,60 @@
 import WidgetKit
 import SwiftUI
 
+private let appGroupID = "group.com.uwebury.weeklyintention"
+private let currentWeekKey = "currentWeekIntention"
+
+private func loadCurrentWeekIntention() -> String {
+    let raw = UserDefaults(suiteName: appGroupID)?.string(forKey: currentWeekKey) ?? ""
+    return raw.trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+        SimpleEntry(date: Date(), intention: "Set this week’s intention")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
-        completion(entry)
+        let text = loadCurrentWeekIntention()
+        completion(SimpleEntry(date: Date(), intention: text))
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
+        let text = loadCurrentWeekIntention()
+        let entry = SimpleEntry(date: Date(), intention: text)
 
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        // refresh periodically so changes appear even if reload isn't triggered for some reason
+        let nextRefresh = Date().addingTimeInterval(60 * 30) // 30 min
+        let timeline = Timeline(entries: [entry], policy: .after(nextRefresh))
         completion(timeline)
     }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let emoji: String
+    let intention: String
 }
 
-struct WeeklyIntentionWidgetEntryView : View {
+struct WeeklyIntentionWidgetEntryView: View {
     var entry: Provider.Entry
 
     var body: some View {
-        VStack {
-            HStack {
-                Text("Time:")
-                Text(entry.date, style: .time)
-            }
+        let shown = entry.intention.isEmpty ? "Set this week’s intention" : entry.intention
 
-            Text("Emoji:")
-            Text(entry.emoji)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Weekly Intention")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Text(shown)
+                .font(.headline)
+                .lineLimit(6)
+                .minimumScaleFactor(0.85)
+
+            Spacer(minLength: 0)
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
@@ -73,14 +79,15 @@ struct WeeklyIntentionWidget: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("Weekly Intention")
+        .description("Shows your current week’s intention.")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
 #Preview(as: .systemSmall) {
     WeeklyIntentionWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    SimpleEntry(date: .now, intention: "Calm focus. One thing at a time.")
+    SimpleEntry(date: .now, intention: "Be kind to myself.")
 }

@@ -1,5 +1,30 @@
 import SwiftUI
 
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
+
+private let appGroupID = "group.com.uwebury.weeklyintention"
+private let currentWeekKey = "currentWeekIntention"
+private let widgetKind = "WeeklyIntentionWidget" // must match the Widget `kind`
+
+private func startOfWeek(for date: Date, calendar: Calendar) -> Date {
+    let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
+    return calendar.date(from: comps) ?? calendar.startOfDay(for: date)
+}
+
+private func writeCurrentWeekIntentionIfNeeded(_ value: String, weekStart: Date, calendar: Calendar) {
+    let currentWeekStart = startOfWeek(for: Date(), calendar: calendar)
+    guard calendar.isDate(weekStart, inSameDayAs: currentWeekStart) else { return }
+
+    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+    UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
+
+    #if canImport(WidgetKit)
+    WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
+    #endif
+}
+
 struct EditIntentionSheet: View {
     let weekStart: Date
     let calendar: Calendar
@@ -35,7 +60,12 @@ struct EditIntentionSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
+                        // Persist to SwiftData via the parent callback.
                         onSave()
+
+                        // Keep the widget in sync via the shared App Group (only for the current week).
+                        writeCurrentWeekIntentionIfNeeded(text, weekStart: weekStart, calendar: calendar)
+
                         dismiss()
                     }
                 }

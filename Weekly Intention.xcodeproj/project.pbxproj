@@ -38,6 +38,8 @@
 
 /* Begin PBXFileReference section */
 		2364B9602EFD8C7900C3F912 /* Weekly Intention.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Weekly Intention.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23C87D572F03EFF2004DDDC5 /* WeeklyIntention.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeeklyIntention.entitlements; sourceTree = "<group>"; };
+		23C87D592F03F018004DDDC5 /* WeeklyIntentionWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeeklyIntentionWidgetExtension.entitlements; sourceTree = "<group>"; };
 		23E23AA02F03DB5D00547DDE /* WeeklyIntentionWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeeklyIntentionWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		23E23AA22F03DB5D00547DDE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		23E23AA42F03DB5D00547DDE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
@@ -92,6 +94,8 @@
 		2364B9572EFD8C7900C3F912 = {
 			isa = PBXGroup;
 			children = (
+				23C87D572F03EFF2004DDDC5 /* WeeklyIntention.entitlements */,
+				23C87D592F03F018004DDDC5 /* WeeklyIntentionWidgetExtension.entitlements */,
 				2364B9622EFD8C7900C3F912 /* Weekly Intention */,
 				23E23AA62F03DB5D00547DDE /* WeeklyIntentionWidget */,
 				23E23AA12F03DB5D00547DDE /* Frameworks */,
@@ -368,6 +372,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Weekly Intention/Weekly Intention.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 28C774C4SH;
@@ -412,6 +417,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Weekly Intention/Weekly Intention.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 28C774C4SH;
@@ -456,6 +462,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WeeklyIntentionWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 28C774C4SH;
@@ -480,6 +487,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "uweb.Weekly-Intention.WeeklyIntentionWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -498,6 +506,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WeeklyIntentionWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 28C774C4SH;
@@ -522,6 +531,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "uweb.Weekly-Intention.WeeklyIntentionWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

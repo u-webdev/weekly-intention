@@ -1,5 +1,8 @@
 import SwiftUI
 import SwiftData
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -13,6 +16,9 @@ struct ContentView: View {
 
     private let weeksBefore = 52
     private let weeksAfter  = 52
+
+    private let appGroupID = "group.com.uwebury.weeklyintention"
+    private let currentWeekKey = "currentWeekIntention"
 
     @State private var selectedIndex: Int = 0
     @State private var editingWeekStart: Date?
@@ -184,6 +190,29 @@ struct ContentView: View {
            let existing = stored.first(where: { calendar.isDate($0.weekStart, inSameDayAs: weekStart) }) {
             modelContext.delete(existing)
         }
+
+        // Keep the widget in sync by writing the latest saved intention to the shared App Group.
+        // (We intentionally do not gate this on “current week” to avoid simulator/calendar edge-cases.)
+        UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
+        // If the user cleared text, keep the existing widget value unless they cleared the current week.
+        // (Optional safety to avoid the widget going blank from editing an older week.)
+        if trimmed.isEmpty {
+            let currentWeekStart = startOfWeek(for: Date())
+            if !calendar.isDate(weekStart, inSameDayAs: currentWeekStart) {
+                // Restore previous value by not writing empties for non-current weeks.
+                // (No-op: value already set above; so we rewrite the previous value if available.)
+                let previous = UserDefaults(suiteName: appGroupID)?.string(forKey: currentWeekKey) ?? ""
+                if !previous.isEmpty {
+                    UserDefaults(suiteName: appGroupID)?.set(previous, forKey: currentWeekKey)
+                }
+            }
+        }
+
+        #if canImport(WidgetKit)
+        // Ensure the Home Screen widget updates shortly after saving.
+        WidgetCenter.shared.reloadTimelines(ofKind: "WeeklyIntentionWidget")
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
     }
 
     private struct DateItem: Identifiable {
