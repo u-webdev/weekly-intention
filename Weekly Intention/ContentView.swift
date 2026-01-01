@@ -237,15 +237,27 @@ struct ContentView: View {
     private func saveIntention(weekStart: Date, text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let existing = stored.first(where: { calendar.isDate($0.weekStart, inSameDayAs: weekStart) }) {
-            existing.text = trimmed
-        } else {
-            modelContext.insert(WeeklyIntention(weekStart: weekStart, text: trimmed))
-        }
+        // Enforce “one intention per week” in code (CloudKit does not support unique constraints).
+        let matches = stored.filter { calendar.isDate($0.weekStart, inSameDayAs: weekStart) }
 
-        if trimmed.isEmpty,
-           let existing = stored.first(where: { calendar.isDate($0.weekStart, inSameDayAs: weekStart) }) {
-            modelContext.delete(existing)
+        if trimmed.isEmpty {
+            // If cleared, delete all entries for this week.
+            for item in matches {
+                modelContext.delete(item)
+            }
+        } else if let first = matches.first {
+            // Update the first matching entry.
+            first.text = trimmed
+
+            // Delete any accidental duplicates.
+            if matches.count > 1 {
+                for dup in matches.dropFirst() {
+                    modelContext.delete(dup)
+                }
+            }
+        } else {
+            // No entry yet for this week.
+            modelContext.insert(WeeklyIntention(weekStart: weekStart, text: trimmed))
         }
 
         // Keep the widget in sync: it should reflect the current week only.
