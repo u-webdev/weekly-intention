@@ -277,8 +277,12 @@ private struct RecallSheet: View {
     let onPickWeekStart: (Date) -> Void
     let onClose: () -> Void
 
+    @State private var searchText: String = ""
+
     private var sortedItems: [WeeklyIntention] {
-        items.sorted { $0.weekStart > $1.weekStart }
+        let base = items.sorted { $0.weekStart > $1.weekStart }
+        guard !searchText.isEmpty else { return base }
+        return base.filter { $0.text.localizedCaseInsensitiveContains(searchText) }
     }
 
     var body: some View {
@@ -286,7 +290,7 @@ private struct RecallSheet: View {
             Group {
                 if sortedItems.isEmpty {
                     VStack(spacing: 12) {
-                        Text("No past intentions yet")
+                        Text(searchText.isEmpty ? "No past intentions yet" : "No matching intentions")
                             .font(.headline)
 
                         Text("Set an intention for any week, then use Recall to jump back to it.")
@@ -324,6 +328,7 @@ private struct RecallSheet: View {
                 }
             }
             .navigationTitle("Recall")
+            .searchable(text: $searchText, prompt: "Search intentions")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { onClose() }
