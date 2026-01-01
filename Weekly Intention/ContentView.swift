@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Foundation
 #if canImport(WidgetKit)
 import WidgetKit
 #endif
@@ -23,6 +24,7 @@ struct ContentView: View {
     @State private var selectedIndex: Int = 0
     @State private var editingWeekStart: Date?
     @State private var draftText: String = ""
+    @State private var showRecall: Bool = false
 
     #if os(macOS)
     @FocusState private var macContentFocused: Bool
@@ -32,94 +34,142 @@ struct ContentView: View {
         let weeks = weekStartsAroundNow()
 
         Group {
-        #if os(iOS)
-        TabView(selection: $selectedIndex) {
-            ForEach(Array(weeks.enumerated()), id: \.offset) { index, weekStart in
+            #if os(iOS)
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Button {
+                        selectedIndex = max(0, selectedIndex - 1)
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedIndex <= 0)
+
+                    Button("Today") {
+                        selectedIndex = weeksBefore
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .disabled(selectedIndex == weeksBefore)
+
+                    Button {
+                        selectedIndex = min(weeks.count - 1, selectedIndex + 1)
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedIndex >= weeks.count - 1)
+
+                    Spacer()
+
+                    Button {
+                        showRecall = true
+                    } label: {
+                        Label("Recall", systemImage: "clock.arrow.circlepath")
+                            .labelStyle(.iconOnly)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Recall")
+                }
+                .padding(.horizontal, 14)
+                .padding(.top, 10)
+
+                TabView(selection: $selectedIndex) {
+                    ForEach(Array(weeks.enumerated()), id: \.offset) { index, weekStart in
+                        WeekSlide(
+                            weekStart: weekStart,
+                            calendar: calendar,
+                            intentionText: intentionText(for: weekStart)
+                        )
+                        .tag(index)
+                        .contentShape(Rectangle())
+                        .onTapGesture { beginEdit(weekStart: weekStart) }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 24)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+            }
+            .onAppear { selectedIndex = weeksBefore }
+
+            #else
+            // macOS: explicit navigation instead of an unlabeled TabView picker.
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Button {
+                        selectedIndex = max(0, selectedIndex - 1)
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .buttonStyle(.borderless)
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                    .disabled(selectedIndex <= 0)
+
+                    Button("Today") {
+                        selectedIndex = weeksBefore
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .keyboardShortcut("0", modifiers: [.command])
+                    .help("Jump to current week (⌘0)")
+                    .disabled(selectedIndex == weeksBefore)
+
+                    Button {
+                        selectedIndex = min(weeks.count - 1, selectedIndex + 1)
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                    .buttonStyle(.borderless)
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+                    .disabled(selectedIndex >= weeks.count - 1)
+
+                    Spacer()
+
+                    Button("Recall") {
+                        showRecall = true
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .help("Recall past intentions")
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+
+                let weekStart = currentWeekStart(from: weeks)
                 WeekSlide(
                     weekStart: weekStart,
                     calendar: calendar,
                     intentionText: intentionText(for: weekStart)
                 )
-                .tag(index)
                 .contentShape(Rectangle())
-                .onTapGesture { beginEdit(weekStart: weekStart) }
+                .onTapGesture {
+                    beginEdit(weekStart: weekStart)
+                }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 24)
             }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .onAppear { selectedIndex = weeksBefore }
-
-        #else
-        // macOS: explicit navigation instead of an unlabeled TabView picker.
-        VStack(spacing: 0) {
-            HStack(spacing: 10) {
-                Button {
+            .onMoveCommand { direction in
+                switch direction {
+                case .left:
                     selectedIndex = max(0, selectedIndex - 1)
-                } label: {
-                    Image(systemName: "chevron.left")
-                }
-                .buttonStyle(.borderless)
-                .keyboardShortcut(.leftArrow, modifiers: [])
-                .disabled(selectedIndex <= 0)
-
-                Button("Today") {
-                    selectedIndex = weeksBefore
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-                .keyboardShortcut("0", modifiers: [.command])
-                .help("Jump to current week (⌘0)")
-                .disabled(selectedIndex == weeksBefore)
-
-                Button {
+                case .right:
                     selectedIndex = min(weeks.count - 1, selectedIndex + 1)
-                } label: {
-                    Image(systemName: "chevron.right")
+                default:
+                    break
                 }
-                .buttonStyle(.borderless)
-                .keyboardShortcut(.rightArrow, modifiers: [])
-                .disabled(selectedIndex >= weeks.count - 1)
-
-                Spacer()
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-
-            WeekSlide(
-                weekStart: currentWeekStart(from: weeks),
-                calendar: calendar,
-                intentionText: intentionText(for: currentWeekStart(from: weeks))
-            )
-            .contentShape(Rectangle())
-            .onTapGesture {
-                beginEdit(weekStart: currentWeekStart(from: weeks))
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 24)
-        }
-        .onMoveCommand { direction in
-            switch direction {
-            case .left:
-                selectedIndex = max(0, selectedIndex - 1)
-            case .right:
-                selectedIndex = min(weeks.count - 1, selectedIndex + 1)
-            default:
-                break
-            }
-        }
-        .focusable()
-        #if os(macOS)
-        .focused($macContentFocused)
-        .focusEffectDisabled()
-        #endif
-        .onAppear {
-            selectedIndex = weeksBefore
+            .focusable()
             #if os(macOS)
-            macContentFocused = true
+            .focused($macContentFocused)
+            .focusEffectDisabled()
             #endif
-        }
-        #endif
+            .onAppear {
+                selectedIndex = weeksBefore
+                #if os(macOS)
+                macContentFocused = true
+                #endif
+            }
+            #endif
         }
         .sheet(item: editingWeekStartDateItem) { (item: DateItem) in
             EditIntentionSheet(
@@ -134,18 +184,21 @@ struct ContentView: View {
             .presentationDetents([.medium])
             #endif
         }
-    }
-
-    private func macWeekTitle(for weekStart: Date) -> String {
-        let weekNo = calendar.component(.weekOfYear, from: weekStart)
-        let end = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
-
-        let df = DateFormatter()
-        df.calendar = calendar
-        df.locale = .current
-        df.setLocalizedDateFormatFromTemplate("MMM d")
-
-        return "Week \(weekNo) · \(df.string(from: weekStart)) – \(df.string(from: end))"
+        .sheet(isPresented: $showRecall) {
+            RecallSheet(
+                calendar: calendar,
+                items: stored,
+                onPickWeekStart: { picked in
+                    if let idx = indexForWeekStart(picked, within: weeks) {
+                        selectedIndex = idx
+                    }
+                    showRecall = false
+                },
+                onClose: {
+                    showRecall = false
+                }
+            )
+        }
     }
 
     private func currentWeekStartFallback() -> Date {
@@ -166,6 +219,10 @@ struct ContentView: View {
     private func startOfWeek(for date: Date) -> Date {
         let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
         return calendar.date(from: comps) ?? calendar.startOfDay(for: date)
+    }
+
+    private func indexForWeekStart(_ weekStart: Date, within weeks: [Date]) -> Int? {
+        weeks.firstIndex(where: { calendar.isDate($0, inSameDayAs: weekStart) })
     }
 
     private func intentionText(for weekStart: Date) -> String {
@@ -191,28 +248,14 @@ struct ContentView: View {
             modelContext.delete(existing)
         }
 
-        // Keep the widget in sync by writing the latest saved intention to the shared App Group.
-        // (We intentionally do not gate this on “current week” to avoid simulator/calendar edge-cases.)
-        UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
-        // If the user cleared text, keep the existing widget value unless they cleared the current week.
-        // (Optional safety to avoid the widget going blank from editing an older week.)
-        if trimmed.isEmpty {
-            let currentWeekStart = startOfWeek(for: Date())
-            if !calendar.isDate(weekStart, inSameDayAs: currentWeekStart) {
-                // Restore previous value by not writing empties for non-current weeks.
-                // (No-op: value already set above; so we rewrite the previous value if available.)
-                let previous = UserDefaults(suiteName: appGroupID)?.string(forKey: currentWeekKey) ?? ""
-                if !previous.isEmpty {
-                    UserDefaults(suiteName: appGroupID)?.set(previous, forKey: currentWeekKey)
-                }
-            }
+        // Keep the widget in sync: it should reflect the current week only.
+        let currentWeekStart = startOfWeek(for: Date())
+        if calendar.isDate(weekStart, inSameDayAs: currentWeekStart) {
+            UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
+            #if canImport(WidgetKit)
+            WidgetCenter.shared.reloadTimelines(ofKind: "WeeklyIntentionWidget")
+            #endif
         }
-
-        #if canImport(WidgetKit)
-        // Ensure the Home Screen widget updates shortly after saving.
-        WidgetCenter.shared.reloadTimelines(ofKind: "WeeklyIntentionWidget")
-        WidgetCenter.shared.reloadAllTimelines()
-        #endif
     }
 
     private struct DateItem: Identifiable {
@@ -225,6 +268,84 @@ struct ContentView: View {
             get: { editingWeekStart.map { DateItem(id: $0, date: $0) } },
             set: { editingWeekStart = $0?.date }
         )
+    }
+}
+
+private struct RecallSheet: View {
+    let calendar: Calendar
+    let items: [WeeklyIntention]
+    let onPickWeekStart: (Date) -> Void
+    let onClose: () -> Void
+
+    private var sortedItems: [WeeklyIntention] {
+        items.sorted { $0.weekStart > $1.weekStart }
+    }
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if sortedItems.isEmpty {
+                    VStack(spacing: 12) {
+                        Text("No past intentions yet")
+                            .font(.headline)
+
+                        Text("Set an intention for any week, then use Recall to jump back to it.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: 360)
+
+                        Button("Close") { onClose() }
+                            .buttonStyle(.borderedProminent)
+                            .padding(.top, 8)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding()
+                } else {
+                    List {
+                        ForEach(sortedItems, id: \.weekStart) { item in
+                            Button {
+                                onPickWeekStart(item.weekStart)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(weekRangeText(for: item.weekStart))
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+
+                                    Text(item.text.trimmingCharacters(in: .whitespacesAndNewlines))
+                                        .font(.body)
+                                        .lineLimit(2)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Recall")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { onClose() }
+                }
+            }
+        }
+        #if os(macOS)
+        .frame(minWidth: 520, minHeight: 420)
+        #endif
+
+        #if os(iOS)
+        .presentationDetents([.medium, .large])
+        #endif
+    }
+
+    private func weekRangeText(for weekStart: Date) -> String {
+        let end = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
+        let df = DateFormatter()
+        df.calendar = calendar
+        df.locale = .current
+        df.setLocalizedDateFormatFromTemplate("MMM d")
+        return "\(df.string(from: weekStart)) – \(df.string(from: end))"
     }
 }
 
