@@ -8,31 +8,22 @@
 import WidgetKit
 import SwiftUI
 
-private let appGroupID = "group.com.uwebury.weeklyintention"
-private let currentWeekKey = "currentWeekIntention"
-
-private func loadCurrentWeekIntention() -> String {
-    let raw = UserDefaults(suiteName: appGroupID)?.string(forKey: currentWeekKey) ?? ""
-    return raw.trimmingCharacters(in: .whitespacesAndNewlines)
-}
-
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date(), intention: "Set this week’s intention")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let text = loadCurrentWeekIntention()
+        let text = WidgetCache.read().text.trimmingCharacters(in: .whitespacesAndNewlines)
         completion(SimpleEntry(date: Date(), intention: text))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
-        let text = loadCurrentWeekIntention()
+        let text = WidgetCache.read().text.trimmingCharacters(in: .whitespacesAndNewlines)
         let entry = SimpleEntry(date: Date(), intention: text)
 
-        // refresh periodically so changes appear even if reload isn't triggered for some reason
-        let nextRefresh = Date().addingTimeInterval(60 * 30) // 30 min
-        let timeline = Timeline(entries: [entry], policy: .after(nextRefresh))
+        // We rely on the app to trigger reloads when the cache changes.
+        let timeline = Timeline(entries: [entry], policy: .never)
         completion(timeline)
     }
 }

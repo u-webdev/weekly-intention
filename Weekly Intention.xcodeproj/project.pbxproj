@@ -53,11 +53,21 @@
 			);
 			target = 23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */;
 		};
+		23FF706C2F07BF99002732A3 /* Exceptions for "Weekly Intention" folder in "WeeklyIntentionWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WidgetCache.swift,
+			);
+			target = 23E23A9F2F03DB5D00547DDE /* WeeklyIntentionWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2364B9622EFD8C7900C3F912 /* Weekly Intention */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				23FF706C2F07BF99002732A3 /* Exceptions for "Weekly Intention" folder in "WeeklyIntentionWidgetExtension" target */,
+			);
 			path = "Weekly Intention";
 			sourceTree = "<group>";
 		};

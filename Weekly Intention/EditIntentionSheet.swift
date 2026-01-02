@@ -1,12 +1,5 @@
 import SwiftUI
-
-#if canImport(WidgetKit)
-import WidgetKit
-#endif
-
-private let appGroupID = "group.com.uwebury.weeklyintention"
-private let currentWeekKey = "currentWeekIntention"
-private let widgetKind = "WeeklyIntentionWidget" // must match the Widget `kind`
+import Foundation
 
 private func startOfWeek(for date: Date, calendar: Calendar) -> Date {
     let comps = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
@@ -18,11 +11,7 @@ private func writeCurrentWeekIntentionIfNeeded(_ value: String, weekStart: Date,
     guard calendar.isDate(weekStart, inSameDayAs: currentWeekStart) else { return }
 
     let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-    UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
-
-    #if canImport(WidgetKit)
-    WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
-    #endif
+    WidgetCache.writeCurrentWeek(text: trimmed, weekStart: currentWeekStart)
 }
 
 struct EditIntentionSheet: View {

@@ -1,13 +1,11 @@
 import SwiftUI
 import SwiftData
 import Foundation
-#if canImport(WidgetKit)
-import WidgetKit
-#endif
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var stored: [WeeklyIntention]
+    @Environment(\.scenePhase) private var scenePhase
 
     private let calendar: Calendar = {
         var cal = Calendar(identifier: .iso8601) // Monday-based
@@ -18,9 +16,6 @@ struct ContentView: View {
     private let weeksBefore = 52
     private let weeksAfter  = 52
 
-    private let appGroupID = "group.com.uwebury.weeklyintention"
-    private let currentWeekKey = "currentWeekIntention"
-
     @State private var selectedIndex: Int = 0
     @State private var editingWeekStart: Date?
     @State private var draftText: String = ""
@@ -29,6 +24,22 @@ struct ContentView: View {
     #if os(macOS)
     @FocusState private var macContentFocused: Bool
     #endif
+
+    private var currentWeekText: String {
+        intentionText(for: startOfWeek(for: Date()))
+    }
+
+    private func syncWidgetCacheFromStoreIfNeeded() {
+        let currentStart = startOfWeek(for: Date())
+        let currentText = intentionText(for: currentStart)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let cached = WidgetCache.read().text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard currentText != cached else { return }
+        WidgetCache.writeCurrentWeek(text: currentText, weekStart: currentStart)
+    }
 
     var body: some View {
         let weeks = weekStartsAroundNow()
@@ -199,6 +210,18 @@ struct ContentView: View {
                 }
             )
         }
+        .onAppear {
+            syncWidgetCacheFromStoreIfNeeded()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                syncWidgetCacheFromStoreIfNeeded()
+            }
+        }
+        .onChange(of: currentWeekText) { _, _ in
+            // Covers CloudKit sync bringing in data for the current week (no explicit save action).
+            syncWidgetCacheFromStoreIfNeeded()
+        }
     }
 
     private func currentWeekStartFallback() -> Date {
@@ -260,13 +283,10 @@ struct ContentView: View {
             modelContext.insert(WeeklyIntention(weekStart: weekStart, text: trimmed))
         }
 
-        // Keep the widget in sync: it should reflect the current week only.
+        // Keep the widget in sync: update cache ONLY when saving the CURRENT week.
         let currentWeekStart = startOfWeek(for: Date())
         if calendar.isDate(weekStart, inSameDayAs: currentWeekStart) {
-            UserDefaults(suiteName: appGroupID)?.set(trimmed, forKey: currentWeekKey)
-            #if canImport(WidgetKit)
-            WidgetCenter.shared.reloadTimelines(ofKind: "WeeklyIntentionWidget")
-            #endif
+            WidgetCache.writeCurrentWeek(text: trimmed, weekStart: currentWeekStart)
         }
     }
 
