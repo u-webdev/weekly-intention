@@ -4,6 +4,7 @@ import SwiftData
 @main
 struct WeeklyIntentionApp: App {
 
+    @StateObject private var appState = AppState()
     private let modelContainer: ModelContainer
 
     init() {
@@ -24,7 +25,19 @@ struct WeeklyIntentionApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appState)
         }
         .modelContainer(modelContainer)
+
+        #if os(macOS)
+        .commands {
+            CommandMenu("Edit") {
+                Button("Search Intentions…") {
+                    appState.presentRecall(focusSearch: true)
+                }
+                .keyboardShortcut("f", modifiers: [.command])
+            }
+        }
+        #endif
     }
 }

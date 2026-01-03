@@ -6,6 +6,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var stored: [WeeklyIntention]
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var appState: AppState
 
     private let calendar: Calendar = {
         var cal = Calendar(identifier: .iso8601) // Monday-based
@@ -19,7 +20,6 @@ struct ContentView: View {
     @State private var selectedIndex: Int = 0
     @State private var editingWeekStart: Date?
     @State private var draftText: String = ""
-    @State private var showRecall: Bool = false
 
     #if os(macOS)
     @FocusState private var macContentFocused: Bool
@@ -74,7 +74,7 @@ struct ContentView: View {
                     Spacer()
 
                     Button {
-                        showRecall = true
+                        appState.presentRecall(focusSearch: true)
                     } label: {
                         Label("Recall", systemImage: "clock.arrow.circlepath")
                             .labelStyle(.iconOnly)
@@ -137,7 +137,7 @@ struct ContentView: View {
                     Spacer()
 
                     Button("Recall") {
-                        showRecall = true
+                        appState.presentRecall(focusSearch: true)
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
@@ -195,7 +195,7 @@ struct ContentView: View {
             .presentationDetents([.medium])
             #endif
         }
-        .sheet(isPresented: $showRecall) {
+        .sheet(isPresented: $appState.isRecallPresented) {
             RecallSheet(
                 calendar: calendar,
                 items: stored,
@@ -203,12 +203,13 @@ struct ContentView: View {
                     if let idx = indexForWeekStart(picked, within: weeks) {
                         selectedIndex = idx
                     }
-                    showRecall = false
+                    appState.isRecallPresented = false
                 },
                 onClose: {
-                    showRecall = false
+                    appState.isRecallPresented = false
                 }
             )
+            .environmentObject(appState)
         }
         .onAppear {
             syncWidgetCacheFromStoreIfNeeded()
@@ -310,6 +311,8 @@ private struct RecallSheet: View {
     let onClose: () -> Void
 
     @State private var searchText: String = ""
+    @EnvironmentObject private var appState: AppState
+    @FocusState private var isSearchFocused: Bool
 
     private var sortedItems: [WeeklyIntention] {
         let base = items.sorted { $0.weekStart > $1.weekStart }
@@ -361,6 +364,16 @@ private struct RecallSheet: View {
             }
             .navigationTitle("Recall")
             .searchable(text: $searchText, prompt: "Search intentions")
+            .searchFocused($isSearchFocused)
+            .onAppear {
+                if appState.shouldFocusRecallSearch {
+                    appState.shouldFocusRecallSearch = false
+                    // Defer focus to the next run loop so SwiftUI has attached the searchable field.
+                    DispatchQueue.main.async {
+                        isSearchFocused = true
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { onClose() }
