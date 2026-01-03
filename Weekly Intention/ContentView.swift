@@ -7,6 +7,7 @@ struct ContentView: View {
     @Query private var stored: [WeeklyIntention]
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var syncStatus: SyncStatus
 
     private let calendar: Calendar = {
         var cal = Calendar(identifier: .iso8601) // Monday-based
@@ -73,6 +74,16 @@ struct ContentView: View {
 
                     Spacer()
 
+                    if let label = syncStatus.labelText {
+                        Text(label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(.ultraThinMaterial, in: Capsule())
+                            .accessibilityLabel(label)
+                    }
+
                     Button {
                         appState.presentRecall(focusSearch: true)
                     } label: {
@@ -135,6 +146,16 @@ struct ContentView: View {
                     .disabled(selectedIndex >= weeks.count - 1)
 
                     Spacer()
+
+                    if let label = syncStatus.labelText {
+                        Text(label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(.ultraThinMaterial, in: Capsule())
+                            .accessibilityLabel(label)
+                    }
 
                     Button("Recall") {
                         appState.presentRecall(focusSearch: true)
