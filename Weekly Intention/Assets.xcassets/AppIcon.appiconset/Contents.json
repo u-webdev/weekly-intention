@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "Weekly Intention App-iOS-Default-512x512@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -12,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "Weekly Intention App-iOS-ClearDark-512x512@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -23,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "Weekly Intention App-iOS-TintedDark-512x512@2x.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -63,16 +66,19 @@
       "size" : "256x256"
     },
     {
+      "filename" : "Weekly Intention App-iOS-Default-256x256@2x.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
+      "filename" : "Weekly Intention App-iOS-ClearDark-512x512@1x.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
+      "filename" : "Weekly Intention App-iOS-Default-512x512@2x 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
