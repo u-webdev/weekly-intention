@@ -277,6 +277,12 @@ struct ContentView: View {
             modelContext.insert(WeeklyIntention(weekStart: weekStart, text: trimmed))
         }
 
+        // If the user edited the CURRENT week, update the widget cache too.
+        let currentWeek = startOfWeek(for: Date())
+        if calendar.isDate(weekStart, inSameDayAs: currentWeek) {
+            WidgetSharedStore.writeCurrentWeekIntention(weekStart: currentWeek, text: trimmed)
+        }
+
     }
 
     private struct DateItem: Identifiable {

@@ -2,8 +2,6 @@
 DerivedData/
 .build/
 *.xcuserstate
-
-# User-specific Xcode settings
 xcuserdata/
 *.xcscmblueprint
 
