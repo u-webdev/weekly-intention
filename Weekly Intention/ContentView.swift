@@ -98,7 +98,7 @@ struct ContentView: View {
             }
             .onAppear { selectedIndex = weeksBefore }
 
-            #else
+            #elseif os(macOS)
             // macOS: explicit navigation instead of an unlabeled TabView picker.
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
@@ -175,16 +175,81 @@ struct ContentView: View {
                 }
             }
             .focusable()
-            #if os(macOS)
             .focused($macContentFocused)
             .focusEffectDisabled()
-            #endif
             .onAppear {
                 selectedIndex = weeksBefore
-                #if os(macOS)
                 macContentFocused = true
-                #endif
             }
+
+            #else
+            // visionOS (and any other platforms): use the swipeable week pager UI.
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Button {
+                        selectedIndex = max(0, selectedIndex - 1)
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedIndex <= 0)
+
+                    Button("Today") {
+                        selectedIndex = weeksBefore
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .disabled(selectedIndex == weeksBefore)
+
+                    Button {
+                        selectedIndex = min(weeks.count - 1, selectedIndex + 1)
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(selectedIndex >= weeks.count - 1)
+
+                    Spacer()
+
+                    if let label = syncStatus.labelText {
+                        Text(label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(.ultraThinMaterial, in: Capsule())
+                            .accessibilityLabel(label)
+                    }
+
+                    Button {
+                        appState.presentRecall(focusSearch: true)
+                    } label: {
+                        Label("Recall", systemImage: "clock.arrow.circlepath")
+                            .labelStyle(.iconOnly)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Recall")
+                }
+                .padding(.horizontal, 14)
+                .padding(.top, 10)
+
+                TabView(selection: $selectedIndex) {
+                    ForEach(Array(weeks.enumerated()), id: \.offset) { index, weekStart in
+                        WeekSlide(
+                            weekStart: weekStart,
+                            calendar: calendar,
+                            intentionText: intentionText(for: weekStart)
+                        )
+                        .tag(index)
+                        .contentShape(Rectangle())
+                        .onTapGesture { beginEdit(weekStart: weekStart) }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 24)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+            }
+            .onAppear { selectedIndex = weeksBefore }
             #endif
         }
         .sheet(item: editingWeekStartDateItem) { (item: DateItem) in
