@@ -64,12 +64,6 @@ struct WeeklyIntentionWidgetView: View {
                     .lineLimit(4)
             }
 
-            if let updated = entry.updatedAt {
-                Text("Updated \(updated.formatted(date: .abbreviated, time: .standard))")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -99,7 +93,7 @@ struct WeeklyIntentionWidgetView: View {
 }
 
 struct WeeklyIntentionWidget: Widget {
-    let kind: String = "WeeklyIntentionWidget2"
+    let kind: String = "WeeklyIntentionWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: WeeklyIntentionProvider()) { entry in

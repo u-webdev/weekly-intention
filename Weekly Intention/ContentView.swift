@@ -1,6 +1,10 @@
+
 import SwiftUI
 import SwiftData
 import Foundation
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -346,6 +350,10 @@ struct ContentView: View {
         let currentWeek = startOfWeek(for: Date())
         if calendar.isDate(weekStart, inSameDayAs: currentWeek) {
             WidgetSharedStore.writeCurrentWeekIntention(weekStart: currentWeek, text: trimmed)
+
+            #if canImport(WidgetKit)
+            WidgetCenter.shared.reloadTimelines(ofKind: "WeeklyIntentionWidget")
+            #endif
         }
 
     }
