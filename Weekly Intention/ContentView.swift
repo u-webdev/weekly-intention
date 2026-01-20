@@ -346,6 +346,13 @@ struct ContentView: View {
             modelContext.insert(WeeklyIntention(weekStart: weekStart, text: trimmed))
         }
 
+        // Persist changes explicitly so CloudKit can propagate them across devices.
+        do {
+            try modelContext.save()
+        } catch {
+            print("SwiftData save failed:", error)
+        }
+
         // If the user edited the CURRENT week, update the widget cache too.
         let currentWeek = startOfWeek(for: Date())
         if calendar.isDate(weekStart, inSameDayAs: currentWeek) {
