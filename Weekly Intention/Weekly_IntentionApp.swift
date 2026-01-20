@@ -39,8 +39,29 @@ struct WeeklyIntentionApp: App {
                 }
                 .onChange(of: scenePhase) { _, newPhase in
                     if newPhase == .active {
-                        // Re-evaluate when returning to the foreground (e.g. after toggling network).
                         syncStatus.handleNetworkChange(isOnline: networkStatus.isOnline)
+
+                        // Mirror current-week intention into widget cache after potential CloudKit sync
+                        let calendar = Calendar.current
+                        let now = Date()
+                        let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? now
+                        let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) ?? now
+
+                        Task {
+                            do {
+                                let descriptor = FetchDescriptor<WeeklyIntention>(
+                                    predicate: #Predicate { $0.weekStart >= weekStart && $0.weekStart < weekEnd }
+                                )
+                                if let current = try modelContainer.mainContext.fetch(descriptor).first {
+                                    WidgetSharedStore.writeCurrentWeekIntention(
+                                        weekStart: current.weekStart,
+                                        text: current.text
+                                    )
+                                }
+                            } catch {
+                                print("Widget mirror fetch failed:", error)
+                            }
+                        }
                     }
                 }
         }
