@@ -1,110 +1,169 @@
-# 1. App Overview
+## 1. App Overview
 
-**Name:** Weekly Intention  
-**Platforms:** iOS, macOS  
-**Includes:** App + Widget Extension  
-**Status:** Submitted / Live (update as needed)
+**Name:** Weekly Intention  
+**Platforms:** iOS, macOS (Apple Watch widget planned)  
+**Includes:** App + Widgets  
+**Status:** Live
 
 **One-liner:**  
-A minimal app to set one intention per week and stay aligned — supported by a simple widget.
+A minimal app to hold **one intention per calendar week** and keep it gently present across devices.
 
 ---
 
-# 2. Core Philosophy
+## 2. Core Product Rule (Non-Negotiable)
 
-- One intention per week, by design
-- Reflection over productivity
-- Calm, distraction-free experience
-- Built primarily for personal use, shared publicly as-is
+> **At any given moment, there is exactly one current intention per week — and it is the same on every device.**
+
+- Intentions can be changed at any time
+    
+- There is no “versioning” exposed to the user
+    
+- All surfaces converge to the same value
+    
+
+This rule applies to:
+
+- iPhone app
+    
+- macOS app
+    
+- iOS & macOS widgets
+    
+- Apple Watch widget
+    
+
+Sync is therefore **foundational**, not optional.
+
+---
+
+## 3. Philosophy
+
+- Orientation over productivity
+    
+- Presence over execution
+    
+- Visibility without pressure
+    
+- Built primarily for personal use, shared openly
+    
 
 **Non-goals:**
-- No streaks or gamification
+
+- No streaks
+    
+- No gamification
+    
 - No analytics-driven behavior
+    
 - No social features
+    
 - No feature bloat
+    
 
 ---
 
-# 3. Current Feature Scope
+## 4. Current Feature Scope
 
 ### App
-- Create and edit one weekly intention
-- Automatically scoped to calendar weeks
-- Local-first storage (no backend)
-- Simple navigation between weeks
 
-### Widget
-- Displays current week + intention
-- Same behavior on iOS and macOS
-- Updates immediately after save
-- No timestamps shown (intentional)
+- Create and edit one intention per calendar week
+    
+- Navigate between weeks
+    
+- Change intention mid-week without penalty
+    
+- Local-first UX, iCloud-backed persistence
+    
 
----
+### Widgets
 
-# 4. Technical Snapshot
-
-- **Language:** Swift / SwiftUI
-- **Architecture:** Simple, local state
-- **Storage:** On-device only
-- **Widgets:** WidgetKit
-- **Platforms:** iOS, macOS
-- **visionOS:** Explicitly excluded
+- Show current week + intention
+    
+- Read-only
+    
+- Designed for glanceability
+    
 
 ---
 
-# 5. Design Constraints
+## 5. Data & Sync Model
+
+- **Storage:** SwiftData
+    
+- **Sync:** iCloud / CloudKit (private database)
+    
+- **Source of truth:** CloudKit-backed model container
+    
+- **Conflict policy:** Last write wins (timestamp-based)
+    
+
+Design intent:
+
+- All devices eventually converge
+    
+- Temporary divergence is acceptable
+    
+- Permanent divergence is not
+    
+
+---
+
+## 6. Design Constraints
 
 - Minimal color palette
-- Neutral, calming visuals
-- Icon is intentionally simple (single dot metaphor)
+    
+- Calm, neutral visuals
+    
+- Icon as a single dot (orientation metaphor)
+    
 - No onboarding unless absolutely necessary
+    
 
 ---
 
-# 6. App Store Context
+## 7. App Store Context
 
 - No sign-in
-- No tracking
+    
 - No ads
+    
+- No tracking
+    
 - No payments
-- Privacy policy: `PRIVACY.md`
+    
+- Privacy-first
+    
 - Metadata intentionally concise
+    
 
 ---
 
-# 7. Explicit Decisions & Tradeoffs
+## 8. Explicitly Out of Scope
 
-- Only one active intention at a time
-- No widget configuration options
-- No sync between devices (for now)
-- macOS support is a first-class citizen
-
----
-
-# 8. Release Strategy
-
-- Small, focused releases
-- Ship only when it feels “done enough”
-- Personal usage is the primary quality gate
-- Avoid roadmap pressure
+- Full watchOS app
+    
+- Interactive widgets
+    
+- Multiple simultaneous intentions
+    
+- Cross-user sharing
+    
+- Growth features
+    
 
 ---
 
-# 9. Future Ideas (Not Commitments)
+## 9. Working Principles
 
-- Optional history view
-- Optional reminders
-- Optional iCloud sync
-- Lightweight reflection notes
-
-These are ideas, not promises.
-
----
-
-# 10. How to Work With This Project
-
-When contributing or extending:
 - Prefer the simplest solution
-- Avoid overengineering
-- Question new features by default
-- Respect existing decisions unless explicitly revisited
+    
+- Ship only what is needed
+    
+- Small, finishable releases
+    
+- Reflection after shipping
+    
+- No roadmap pressure
+    
+
+An app is complete when it is **clear, calm, and reliable at its current resolution**.
